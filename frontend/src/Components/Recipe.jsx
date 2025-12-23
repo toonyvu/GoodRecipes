@@ -16,7 +16,7 @@ export default function Recipe({ food, getDetails }) {
   console.log(details);
 
   function getRecipe() {
-    navigate(`/${food.id}`);
+    navigate(`/recipe/${food.id}`);
   }
 
   if (!details) return <h1 className="place-self-center">Loading...</h1>;

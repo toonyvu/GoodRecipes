@@ -9,7 +9,7 @@ export const fetchRecipes = async (searchString: string) => {
     if (!res.ok) {
       throw new Error("Failed to fetch recipes.");
     }
-    const data = res.json();
+    const data = await res.json();
     return data;
   } catch (err: any) {
     console.log("An Error occured: ", err.message);
