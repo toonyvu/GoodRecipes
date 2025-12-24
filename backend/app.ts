@@ -12,10 +12,6 @@ const PORT = process.env.PORT || 8080;
 console.log(process.env);
 app.use(cors());
 
-app.get("/", (req: Request, res: Response) => {
-  res.send("Hello!!!!");
-});
-
 app.use("/recipes", RecipeRoutes);
 app.use("/", RecipeRoutes);
 
