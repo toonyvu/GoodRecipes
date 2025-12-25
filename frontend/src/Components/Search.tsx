@@ -1,8 +1,13 @@
 import { useState } from "react";
 import glass from "../assets/glass.png";
 import { getRecipes } from "../api/recipes.api";
+import type { RecipeSummary } from "../Types/RecipeList";
 
-export default function Search({ setResult }) {
+type searchProps = {
+  setResult: React.Dispatch<React.SetStateAction<RecipeSummary[]>>;
+};
+
+export default function Search({ setResult }: searchProps) {
   // WHAT ARE HOOKS?
   //Hooks are always placed inside React components!
   //Some hooks are useState, useEffect, useReducer...

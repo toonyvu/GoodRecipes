@@ -1,5 +1,7 @@
-export default function Item({ food }) {
-  const steps = food.analyzedInstructions[0].steps;
+import type { itemProps } from "../Types/Recipe";
+
+export default function Item({ food }: itemProps) {
+  const steps = food.analyzedInstructions?.[0]?.steps ?? [];
   console.log(steps);
   return (
     <div className="w-[98%] border-6 border-green-500 mt-4 p-2 place-self-center">

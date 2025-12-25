@@ -1,9 +1,15 @@
 import Recipe from "./Recipe";
 import { getRecipe as fetchDetails } from "../api/recipes.api";
 import { useEffect, useState } from "react";
+import type { RecipeSummary } from "../Types/RecipeList";
+import type { RecipeWithDetails } from "../Types/Recipe";
 
-export default function RecipeList({ result }) {
-  const [fullData, setFullData] = useState([]);
+type recipeListProps = {
+  result: RecipeSummary[];
+};
+
+export default function RecipeList({ result }: recipeListProps) {
+  const [fullData, setFullData] = useState<RecipeWithDetails[]>([]);
   const [loading, setLoading] = useState(true);
 
   useEffect(() => {
@@ -16,13 +22,13 @@ export default function RecipeList({ result }) {
         const details = await Promise.all(
           result.map((food) => fetchDetails(food.id))
         );
-        const merged = result.map((food, index) => ({
+        const merged = result.map((food, index: number) => ({
           ...food,
           details: details[index],
         }));
         setFullData(merged);
         setLoading(false);
-      } catch (err) {
+      } catch (err: any) {
         console.log("An error occured: ", err.message);
       }
     }

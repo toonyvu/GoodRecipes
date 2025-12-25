@@ -4,16 +4,19 @@ import Item from "../Components/Item";
 import { getRecipe } from "../api/recipes.api";
 
 export default function ItemPage() {
-  const { id } = useParams();
+  const { id } = useParams<{ id: string }>();
 
   const [recipe, setRecipe] = useState(null);
   useEffect(() => {
-    async function fetchRecipe(id) {
+    if (!id) return;
+
+    const numericId = Number(id);
+    async function fetchRecipe(id: number) {
       const response = await getRecipe(id);
       setRecipe(response);
     }
 
-    fetchRecipe(id);
+    fetchRecipe(numericId);
   }, [id]);
 
   return <div>{!recipe ? <div>Loading...</div> : <Item food={recipe} />}</div>;

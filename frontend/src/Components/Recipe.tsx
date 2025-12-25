@@ -1,6 +1,11 @@
 import { useNavigate } from "react-router-dom";
+import type { RecipeWithDetails } from "../Types/Recipe";
 
-export default function Recipe({ food }) {
+type recipeDetailsProps = {
+  food: RecipeWithDetails;
+};
+
+export default function Recipe({ food }: recipeDetailsProps) {
   const navigate = useNavigate();
 
   function getRecipe() {
