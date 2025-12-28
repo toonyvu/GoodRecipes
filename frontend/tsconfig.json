@@ -28,7 +28,11 @@
 
     /* Extra Safety (kept from your config) */
     "noUncheckedSideEffectImports": true,
-    "moduleDetection": "force"
+    "moduleDetection": "force",
+    "baseUrl": ".",
+    "paths": {
+      "@/*": ["./src/*"]
+    }
   },
   "include": ["src"],
   "references": [{ "path": "./tsconfig.node.json" }]

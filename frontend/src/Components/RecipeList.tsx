@@ -3,6 +3,15 @@ import { getRecipe as fetchDetails } from "../api/recipes.api";
 import { useEffect, useState } from "react";
 import type { RecipeSummary } from "../Types/RecipeList";
 import type { RecipeWithDetails } from "../Types/Recipe";
+import {
+  Card,
+  CardHeader,
+  CardFooter,
+  CardTitle,
+  CardAction,
+  CardDescription,
+  CardContent,
+} from "./ui/card";
 
 type recipeListProps = {
   result: RecipeSummary[];
@@ -28,8 +37,12 @@ export default function RecipeList({ result }: recipeListProps) {
         }));
         setFullData(merged);
         setLoading(false);
-      } catch (err: any) {
-        console.log("An error occured: ", err.message);
+      } catch (err: unknown) {
+        if (err instanceof Error) {
+          console.log("An error occured: ", err.message);
+        } else {
+          console.log("An unknown error occured: ", err);
+        }
       }
     }
 
