@@ -12,7 +12,7 @@ function App() {
       <BrowserRouter>
         <Routes>
           <Route element={<AuthLayout />}>
-            <Route path="/" element={<Login />}></Route>
+            <Route path="*" element={<Login />}></Route>
           </Route>
 
           <Route element={<MainLayout />}>

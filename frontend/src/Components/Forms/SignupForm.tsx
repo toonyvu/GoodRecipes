@@ -14,9 +14,9 @@ type menuFormProps = {
   menu: React.Dispatch<React.SetStateAction<string>>;
 };
 
-export default function LoginForm({ menu }: menuFormProps) {
-  function toSignup() {
-    menu("Signup");
+export default function SignupForm({ menu }: menuFormProps) {
+  function toLogin() {
+    menu("Login");
   }
 
   return (
@@ -27,12 +27,13 @@ export default function LoginForm({ menu }: menuFormProps) {
       <div>
         <Card className="w-125 mt-15">
           <CardHeader>
-            <CardTitle>Login</CardTitle>
+            <CardTitle>Sign Up</CardTitle>
             <CardDescription>
-              Log in using your email and password.
+              Sign up by filling in these fields.
             </CardDescription>
             <CardAction>
-              No account? <button onClick={toSignup}>Sign up here:</button>
+              Already have an account?{" "}
+              <button onClick={toLogin}>Login here:</button>
             </CardAction>
           </CardHeader>
           <CardContent>
@@ -40,12 +41,22 @@ export default function LoginForm({ menu }: menuFormProps) {
               <label htmlFor="username">Username:</label>
               <input type="text" id="username" className="border p-2" />
 
+              <label htmlFor="repeatedUsername">Repeat your username:</label>
+              <input type="text" id="repeatedUsername" className="border p-2" />
+
               <label htmlFor="password">Password:</label>
               <input type="password" id="password" className="border p-2" />
 
-              <button className="bg-green-400 p-2 rounded">Login!</button>
+              <label htmlFor="repeatedPassword">Repeat your password:</label>
+              <input
+                type="password"
+                id="repeatedPassword"
+                className="border p-2"
+              />
+
+              <button className="bg-green-400 p-2 rounded">Sign up!</button>
               <button className="bg-gray-200 p-2 rounded">
-                Login with Google
+                Signup with Google
               </button>
             </form>
           </CardContent>
