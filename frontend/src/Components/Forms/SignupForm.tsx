@@ -38,6 +38,9 @@ export default function SignupForm({ menu }: menuFormProps) {
           </CardHeader>
           <CardContent>
             <form className="flex flex-col gap-4">
+              <label htmlFor="email">Enter your Email:</label>
+              <input type="text" id="email" className="border p-2" />
+
               <label htmlFor="username">Username:</label>
               <input type="text" id="username" className="border p-2" />
 
