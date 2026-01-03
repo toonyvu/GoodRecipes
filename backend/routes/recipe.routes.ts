@@ -5,7 +5,6 @@ import { getRecipes } from "../controllers/recipes.controller";
 const router = Router();
 
 router.get("/:id", getRecipe);
-
 router.get("/", getRecipes);
 
 export default router;
