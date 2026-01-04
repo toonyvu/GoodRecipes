@@ -1,3 +1,4 @@
+import { useState } from "react";
 import {
   Card,
   CardHeader,
@@ -8,15 +9,43 @@ import {
   CardContent,
 } from "../ui/card";
 
-import { useNavigate } from "react-router-dom";
+import { signup } from "../../api/auth.api";
 
 type menuFormProps = {
-  menu: React.Dispatch<React.SetStateAction<string>>;
+  setMenu: React.Dispatch<React.SetStateAction<string>>;
 };
 
-export default function SignupForm({ menu }: menuFormProps) {
+export default function SignupForm({ setMenu }: menuFormProps) {
+  const [email, setEmail] = useState("");
+  const [username, setUsername] = useState("");
+  const [confirmUsername, setConfirmUsername] = useState("");
+  const [password, setPassword] = useState("");
+  const [confirmPassword, setConfirmPassword] = useState("");
+
+  const [error, setError] = useState<string | null>(null);
+
   function toLogin() {
-    menu("Login");
+    setMenu("Login");
+  }
+
+  async function handleSubmit(e: React.FormEvent) {
+    e.preventDefault();
+    setError(null);
+
+    try {
+      if (username !== confirmUsername) {
+        throw new Error("Usernames do not match.");
+      } else if (password !== confirmPassword) {
+        throw new Error("Passwords do not match.");
+      } else {
+        const data = await signup(email, username, password);
+        console.log("Account created", data);
+
+        setMenu("Login");
+      }
+    } catch (err: any) {
+      setError(err.response?.data?.message || err);
+    }
   }
 
   return (
@@ -33,31 +62,60 @@ export default function SignupForm({ menu }: menuFormProps) {
             </CardDescription>
             <CardAction>
               Already have an account?{" "}
-              <button onClick={toLogin}>Login here:</button>
+              <button onClick={toLogin} className="text-blue-500">
+                Login here:
+              </button>
             </CardAction>
           </CardHeader>
           <CardContent>
-            <form className="flex flex-col gap-4">
+            <form className="flex flex-col gap-4" onSubmit={handleSubmit}>
               <label htmlFor="email">Enter your Email:</label>
-              <input type="text" id="email" className="border p-2" />
+              <input
+                type="text"
+                id="email"
+                className="border p-2"
+                onChange={(e) => setEmail(e.target.value)}
+              />
 
               <label htmlFor="username">Username:</label>
-              <input type="text" id="username" className="border p-2" />
+              <input
+                type="text"
+                id="username"
+                className="border p-2"
+                onChange={(e) => {
+                  setUsername(e.target.value);
+                }}
+              />
 
               <label htmlFor="repeatedUsername">Repeat your username:</label>
-              <input type="text" id="repeatedUsername" className="border p-2" />
+              <input
+                type="text"
+                id="repeatedUsername"
+                className="border p-2"
+                onChange={(e) => setConfirmUsername(e.target.value)}
+              />
 
               <label htmlFor="password">Password:</label>
-              <input type="password" id="password" className="border p-2" />
+              <input
+                type="password"
+                id="password"
+                className="border p-2"
+                onChange={(e) => setPassword(e.target.value)}
+              />
 
               <label htmlFor="repeatedPassword">Repeat your password:</label>
               <input
                 type="password"
                 id="repeatedPassword"
                 className="border p-2"
+                onChange={(e) => setConfirmPassword(e.target.value)}
               />
 
-              <button className="bg-green-400 p-2 rounded">Sign up!</button>
+              {error && <p className="text-red-500">{error}</p>}
+
+              <button className="bg-green-400 p-2 rounded" type="submit">
+                Sign up!
+              </button>
               <button className="bg-gray-200 p-2 rounded">
                 Signup with Google
               </button>

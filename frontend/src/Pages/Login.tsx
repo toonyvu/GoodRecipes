@@ -8,13 +8,13 @@ export default function Login() {
   if (menu === "Login") {
     return (
       <>
-        <LoginForm menu={setMenu}></LoginForm>
+        <LoginForm setMenu={setMenu}></LoginForm>
       </>
     );
   } else {
     return (
       <>
-        <SignupForm menu={setMenu}></SignupForm>
+        <SignupForm setMenu={setMenu}></SignupForm>
       </>
     );
   }

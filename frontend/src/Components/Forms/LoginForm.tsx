@@ -12,16 +12,16 @@ import { useState } from "react";
 import { login } from "../../api/auth.api";
 
 type menuFormProps = {
-  menu: React.Dispatch<React.SetStateAction<string>>;
+  setMenu: React.Dispatch<React.SetStateAction<string>>;
 };
 
-export default function LoginForm({ menu }: menuFormProps) {
+export default function LoginForm({ setMenu }: menuFormProps) {
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
   const [error, setError] = useState<string | null>(null);
 
   function toSignup() {
-    menu("Signup");
+    setMenu("Signup");
   }
 
   async function handleSubmit(e: React.FormEvent) {
@@ -30,7 +30,7 @@ export default function LoginForm({ menu }: menuFormProps) {
 
     try {
       const data = await login(email, password);
-      console.log("Logged in: ", data);
+      setError("Logged in");
     } catch (err: any) {
       setError(err.response?.data?.message || "Login failed");
     }
@@ -49,7 +49,10 @@ export default function LoginForm({ menu }: menuFormProps) {
               Log in using your email and password.
             </CardDescription>
             <CardAction>
-              No account? <button onClick={toSignup}>Sign up here:</button>
+              No account?{" "}
+              <button onClick={toSignup} className="text-blue-500">
+                Sign up here:
+              </button>
             </CardAction>
           </CardHeader>
           <CardContent>
