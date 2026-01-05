@@ -10,10 +10,7 @@ import {
 } from "../ui/card";
 
 import { signup } from "../../api/auth.api";
-
-type menuFormProps = {
-  setMenu: React.Dispatch<React.SetStateAction<string>>;
-};
+import type { menuFormProps } from "@/Types/Props";
 
 export default function SignupForm({ setMenu }: menuFormProps) {
   const [email, setEmail] = useState("");

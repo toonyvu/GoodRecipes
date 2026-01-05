@@ -11,9 +11,7 @@ import {
 import { useState } from "react";
 import { login } from "../../api/auth.api";
 
-type menuFormProps = {
-  setMenu: React.Dispatch<React.SetStateAction<string>>;
-};
+import type { menuFormProps } from "@/Types/Props";
 
 export default function LoginForm({ setMenu }: menuFormProps) {
   const [email, setEmail] = useState("");

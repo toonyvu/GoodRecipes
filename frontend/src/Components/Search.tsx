@@ -1,11 +1,7 @@
 import { useState } from "react";
 import glass from "../assets/glass.png";
 import { getRecipes } from "../api/recipes.api";
-import type { RecipeSummary } from "../Types/RecipeList";
-
-type searchProps = {
-  setResult: React.Dispatch<React.SetStateAction<RecipeSummary[]>>;
-};
+import type { searchProps } from "@/Types/Props";
 
 export default function Search({ setResult }: searchProps) {
   // WHAT ARE HOOKS?
