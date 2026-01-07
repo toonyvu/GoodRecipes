@@ -32,6 +32,12 @@ export default function Search({ setResult }: searchProps) {
     setResult(data.results);
   }
 
+  function handleKeyDown(e: React.KeyboardEvent<HTMLInputElement>) {
+    if (e.key === "Enter") {
+      updateRecipes();
+    }
+  }
+
   return (
     <div>
       <div className="mt-5 flex justify-center">
@@ -43,6 +49,7 @@ export default function Search({ setResult }: searchProps) {
             setQuery(e.target.value);
           }}
           type="text"
+          onKeyDown={handleKeyDown}
         />
         <img
           className="w-8 h-8 hover:transition duration-300 ease-linear hover:w-9 hover:h-9"

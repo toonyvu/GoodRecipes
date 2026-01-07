@@ -1,6 +1,14 @@
 import bcrypt from "bcrypt";
 import { Request, Response } from "express";
 import { pool } from "../database";
+import dotenv from "dotenv";
+import { promises as fs } from "fs";
+import path from "path";
+import jwt from "jsonwebtoken";
+import strict from "assert/strict";
+import { ref } from "process";
+
+dotenv.config();
 
 export async function login(req: Request, res: Response) {
   const { email, password } = req.body;
@@ -23,9 +31,34 @@ export async function login(req: Request, res: Response) {
 
   if (!isMatch) {
     return res.status(404).json({ message: "Invalid Password." });
-  }
+  } else {
+    const accessToken = jwt.sign(
+      { username: user.username },
+      process.env.ACCESS_TOKEN_SECRET!,
+      { expiresIn: "5m" }
+    );
 
-  return res.status(200).json({ message: "Logged in successfully!" });
+    const refreshToken = jwt.sign(
+      { username: user.username },
+      process.env.REFRESH_TOKEN_SECRET!,
+      { expiresIn: "30d" }
+    );
+
+    const maxAge = 3 * 1000;
+    await pool.query(
+      "INSERT INTO refresh_tokens(user_id, token, expires_at) VALUES (?, ?, DATE_ADD(NOW(), INTERVAL 30 DAY))",
+      [user.id, refreshToken]
+    );
+    res.cookie("refreshToken", refreshToken, {
+      httpOnly: true,
+      secure: true,
+      sameSite: "strict",
+      maxAge: 24 * 60 * 60 * 1000,
+    });
+    return res
+      .status(200)
+      .json({ message: "Logged in successfully!", accessToken });
+  }
 }
 
 export async function signup(req: Request, res: Response) {
@@ -57,4 +90,45 @@ export async function signup(req: Request, res: Response) {
     console.log(err);
     return res.status(500).json({ message: "Internal server error." });
   }
+}
+
+export async function refresh(req: Request, res: Response) {
+  const refreshToken = req.cookies.refreshToken;
+
+  if (!refreshToken) return res.sendStatus(401);
+
+  const [rows]: any = await pool.query(
+    "SELECT * FROM refresh_tokens WHERE token=?",
+    [refreshToken]
+  );
+
+  if (rows.length === 0) return res.sendStatus(401);
+
+  try {
+    const decoded = jwt.verify(
+      refreshToken,
+      process.env.REFRESH_TOKEN_SECRET!
+    ) as any;
+
+    const accessToken = jwt.sign(
+      { username: decoded.username },
+      process.env.ACCESS_TOKEN_SECRET!,
+      { expiresIn: "5m" }
+    );
+
+    res.json({ accessToken });
+  } catch (err: any) {}
+}
+
+export async function logout(req: Request, res: Response) {
+  const refreshToken = req.cookies.refreshToken;
+
+  if (refreshToken) {
+    await pool.query("DELETE FROM refresh_tokens WHERE token = ?", [
+      refreshToken,
+    ]);
+  }
+
+  res.clearCookie("refreshToken");
+  res.sendStatus(204);
 }
