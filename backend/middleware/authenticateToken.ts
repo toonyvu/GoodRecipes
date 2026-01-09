@@ -13,7 +13,7 @@ export function authenticateToken(
   next: NextFunction
 ) {
   const authHeader = req.headers.authorization;
-  const token = authHeader?.split("")[1];
+  const token = authHeader?.split(" ")[1];
 
   if (!token) {
     return res.sendStatus(401);
@@ -28,6 +28,6 @@ export function authenticateToken(
     req.user = decoded;
     next();
   } catch (err: any) {
-    return res.status(403);
+    return res.sendStatus(403);
   }
 }

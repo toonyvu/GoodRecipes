@@ -2,11 +2,7 @@ import bcrypt from "bcrypt";
 import { Request, Response } from "express";
 import { pool } from "../database";
 import dotenv from "dotenv";
-import { promises as fs } from "fs";
-import path from "path";
 import jwt from "jsonwebtoken";
-import strict from "assert/strict";
-import { ref } from "process";
 
 dotenv.config();
 
@@ -44,7 +40,6 @@ export async function login(req: Request, res: Response) {
       { expiresIn: "30d" }
     );
 
-    const maxAge = 3 * 1000;
     await pool.query(
       "INSERT INTO refresh_tokens(user_id, token, expires_at) VALUES (?, ?, DATE_ADD(NOW(), INTERVAL 30 DAY))",
       [user.id, refreshToken]

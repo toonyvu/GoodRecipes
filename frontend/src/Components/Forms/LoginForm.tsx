@@ -10,7 +10,8 @@ import {
 
 import { useState } from "react";
 import { login } from "../../api/auth.api";
-import { useNavigate } from "react-router-dom";
+import { useAuth } from "@/contexts/AuthContext";
+import api from "../../api/api";
 
 import type { menuFormProps } from "@/Types/Props";
 
@@ -19,7 +20,7 @@ export default function LoginForm({ setMenu }: menuFormProps) {
   const [password, setPassword] = useState("");
   const [error, setError] = useState<string | null>(null);
 
-  const navigate = useNavigate();
+  const { setUser } = useAuth();
 
   function toSignup() {
     setMenu("Signup");
@@ -31,7 +32,7 @@ export default function LoginForm({ setMenu }: menuFormProps) {
 
     try {
       const data = await login(email, password);
-      navigate("/home");
+      setUser(data.user);
     } catch (err: any) {
       setError(err.response?.data?.message || "Login failed");
     }
@@ -81,7 +82,7 @@ export default function LoginForm({ setMenu }: menuFormProps) {
               <button type="submit" className="bg-green-400 p-2 rounded">
                 Login!
               </button>
-              <button className="bg-gray-200 p-2 rounded">
+              <button type="button" className="bg-gray-200 p-2 rounded">
                 Login with Google
               </button>
             </form>
