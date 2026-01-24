@@ -8,10 +8,11 @@ import {
   CardContent,
 } from "../ui/card";
 
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import { login } from "../../api/auth.api";
-import { useAuth } from "@/contexts/AuthContext";
+import { useAuth } from "@/hooks/useAuth";
 import api from "../../api/api";
+import { useNavigate } from "react-router-dom";
 
 import type { menuFormProps } from "@/Types/Props";
 
@@ -19,8 +20,9 @@ export default function LoginForm({ setMenu }: menuFormProps) {
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
   const [error, setError] = useState<string | null>(null);
+  const [isLoading, setIsLoading] = useState(false);
 
-  const { setUser } = useAuth();
+  const { user, setUser } = useAuth();
 
   function toSignup() {
     setMenu("Signup");
@@ -29,12 +31,17 @@ export default function LoginForm({ setMenu }: menuFormProps) {
   async function handleSubmit(e: React.FormEvent) {
     e.preventDefault();
     setError(null);
+    setIsLoading(true);
 
     try {
       const data = await login(email, password);
+      console.log("Logged in!");
       setUser(data.user);
+      console.log(data.user);
+      setIsLoading(false);
     } catch (err: any) {
       setError(err.response?.data?.message || "Login failed");
+      setIsLoading(false);
     }
   }
 
@@ -59,7 +66,7 @@ export default function LoginForm({ setMenu }: menuFormProps) {
           </CardHeader>
           <CardContent>
             <form className="flex flex-col gap-4" onSubmit={handleSubmit}>
-              <label htmlFor="username">Username:</label>
+              <label htmlFor="username">Email:</label>
               <input
                 type="email"
                 value={email}
@@ -79,8 +86,12 @@ export default function LoginForm({ setMenu }: menuFormProps) {
 
               {error && <p className="text-red-500">{error}</p>}
 
-              <button type="submit" className="bg-green-400 p-2 rounded">
-                Login!
+              <button
+                type="submit"
+                className="bg-green-400 p-2 rounded transition duration-100 ease-linear hover:bg-green-600 hover:text-green-50"
+                disabled={isLoading}
+              >
+                {isLoading ? "Logging in..." : "Login!"}
               </button>
               <button type="button" className="bg-gray-200 p-2 rounded">
                 Login with Google

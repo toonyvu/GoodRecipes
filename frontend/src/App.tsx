@@ -5,9 +5,9 @@ import Login from "./Pages/Login";
 import AuthLayout from "./layouts/AuthLayout";
 import MainLayout from "./layouts/MainLayout";
 import { BrowserRouter, Routes, Route, Navigate } from "react-router-dom";
-import { useAuth } from "./contexts/AuthContext";
+import { useAuth } from "@/hooks/useAuth";
 function App() {
-  const { user, loading } = useAuth();
+  const { loading } = useAuth();
 
   if (loading) return <div>Loading...</div>;
 
@@ -15,21 +15,16 @@ function App() {
     <div className="backgroundPattern min-h-screen">
       <BrowserRouter>
         <Routes>
-          {!user && (
-            <Route element={<AuthLayout />}>
-              <Route path="/" element={<Navigate to="/login" replace />} />
-              <Route path="/login" element={<Login />} />
-              <Route path="*" element={<Navigate to="/login" replace />} />
-            </Route>
-          )}
+          <Route element={<AuthLayout />}>
+            <Route path="/login" element={<Login />} />
+          </Route>
 
-          {user && (
-            <Route element={<MainLayout />}>
-              <Route path="/" element={<Navigate to="/home" replace />} />
-              <Route path="/home" element={<Homepage />} />
-              <Route path="/recipe/:id" element={<ItemPage />} />
-            </Route>
-          )}
+          <Route element={<MainLayout />}>
+            <Route path="/home" element={<Homepage />} />
+            <Route path="/recipe/:id" element={<ItemPage />} />
+          </Route>
+
+          <Route path="*" element={<Navigate to="/login" replace />} />
         </Routes>
       </BrowserRouter>
     </div>

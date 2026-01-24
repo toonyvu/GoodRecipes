@@ -15,11 +15,13 @@ export async function login(req: Request, res: Response) {
 
   const [rows]: any = await pool.query(
     "SELECT * FROM accounts WHERE email = ?",
-    [email]
+    [email],
   );
 
   if (rows.length === 0) {
-    return res.status(404).json({ message: "No accounts found." });
+    return res
+      .status(404)
+      .json({ message: `No accounts with email: ${email} found.` });
   }
 
   const user = rows[0];
@@ -31,18 +33,18 @@ export async function login(req: Request, res: Response) {
     const accessToken = jwt.sign(
       { username: user.username },
       process.env.ACCESS_TOKEN_SECRET!,
-      { expiresIn: "5m" }
+      { expiresIn: "5m" },
     );
 
     const refreshToken = jwt.sign(
       { username: user.username },
       process.env.REFRESH_TOKEN_SECRET!,
-      { expiresIn: "30d" }
+      { expiresIn: "30d" },
     );
 
     await pool.query(
       "INSERT INTO refresh_tokens(user_id, token, expires_at) VALUES (?, ?, DATE_ADD(NOW(), INTERVAL 30 DAY))",
-      [user.id, refreshToken]
+      [user.id, refreshToken],
     );
     res.cookie("refreshToken", refreshToken, {
       httpOnly: true,
@@ -50,9 +52,15 @@ export async function login(req: Request, res: Response) {
       sameSite: "strict",
       maxAge: 24 * 60 * 60 * 1000,
     });
-    return res
-      .status(200)
-      .json({ message: "Logged in successfully!", accessToken });
+    return res.status(200).json({
+      message: "Logged in successfully!",
+      accessToken,
+      user: {
+        id: user.id,
+        username: user.name,
+        email: user.email,
+      },
+    });
   }
 }
 
@@ -66,7 +74,7 @@ export async function signup(req: Request, res: Response) {
   try {
     const [existing]: any = await pool.query(
       "SELECT id FROM accounts WHERE email = ?",
-      [email]
+      [email],
     );
 
     if (existing.length > 0) {
@@ -77,7 +85,7 @@ export async function signup(req: Request, res: Response) {
 
     await pool.query(
       "INSERT INTO accounts(email, username, password) VALUES (?, ?, ?)",
-      [email, username, hashedPassword]
+      [email, username, hashedPassword],
     );
 
     return res.status(200).json({ message: "Account created successfully" });
@@ -94,7 +102,7 @@ export async function refresh(req: Request, res: Response) {
 
   const [rows]: any = await pool.query(
     "SELECT * FROM refresh_tokens WHERE token=?",
-    [refreshToken]
+    [refreshToken],
   );
 
   if (rows.length === 0) return res.sendStatus(401);
@@ -102,13 +110,13 @@ export async function refresh(req: Request, res: Response) {
   try {
     const decoded = jwt.verify(
       refreshToken,
-      process.env.REFRESH_TOKEN_SECRET!
+      process.env.REFRESH_TOKEN_SECRET!,
     ) as any;
 
     const accessToken = jwt.sign(
       { username: decoded.username },
       process.env.ACCESS_TOKEN_SECRET!,
-      { expiresIn: "5m" }
+      { expiresIn: "5m" },
     );
 
     res.json({ accessToken });
@@ -125,5 +133,5 @@ export async function logout(req: Request, res: Response) {
   }
 
   res.clearCookie("refreshToken");
-  res.sendStatus(204);
+  return res.sendStatus(204);
 }

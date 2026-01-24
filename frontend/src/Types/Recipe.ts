@@ -23,7 +23,7 @@ export type Recipe = {
 
   analyzedInstructions: {
     steps: InstructionStep[];
-  }[]; // array of instruction sections
+  }[];
 };
 
 export type itemProps = {

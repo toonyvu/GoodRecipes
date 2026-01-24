@@ -7,6 +7,7 @@ export async function login(email: string, password: string) {
   });
 
   const { accessToken } = response.data;
+  console.log(response);
 
   localStorage.setItem("accessToken", accessToken);
 
@@ -16,7 +17,7 @@ export async function login(email: string, password: string) {
 export async function signup(
   email: string,
   username: string,
-  password: string
+  password: string,
 ) {
   const response = await api.post("/auth/register", {
     email,
@@ -25,4 +26,13 @@ export async function signup(
   });
 
   return response.data;
+}
+export async function logout() {
+  try {
+    await api.post("/auth/logout");
+  } catch (err: any) {
+    console.log(err.message);
+  } finally {
+    localStorage.removeItem("accessToken");
+  }
 }

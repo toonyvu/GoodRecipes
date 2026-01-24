@@ -1,12 +1,14 @@
-import { createContext, useContext, useEffect, useState } from "react";
+import { createContext, useEffect, useState } from "react";
 
 import type { ReactNode } from "react";
 import api from "../api/api";
+import { logout as logoutApi } from "../api/auth.api";
 
 export type AuthContextType = {
   user: any;
   setUser: (user: any) => void;
   loading: boolean;
+  logout: () => Promise<void>;
 };
 
 type AuthProviderProps = {
@@ -18,6 +20,16 @@ export const AuthContext = createContext<AuthContextType | null>(null);
 export function AuthProvider({ children }: AuthProviderProps) {
   const [user, setUser] = useState<any>(null);
   const [loading, setLoading] = useState(true);
+
+  async function logout() {
+    try {
+      await logoutApi();
+    } catch (err: any) {
+      console.log(err.message);
+    } finally {
+      setUser(null);
+    }
+  }
 
   useEffect(() => {
     async function restoreSession() {
@@ -48,14 +60,8 @@ export function AuthProvider({ children }: AuthProviderProps) {
   }, []);
 
   return (
-    <AuthContext.Provider value={{ user, setUser, loading }}>
+    <AuthContext.Provider value={{ user, setUser, loading, logout }}>
       {children}
     </AuthContext.Provider>
   );
-}
-
-export function useAuth() {
-  const context = useContext(AuthContext);
-  if (!context) throw new Error("useAuth must be used inside AuthProvider.");
-  return context;
 }

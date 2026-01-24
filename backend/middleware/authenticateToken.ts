@@ -28,6 +28,7 @@ export function authenticateToken(
     req.user = decoded;
     next();
   } catch (err: any) {
+    console.log(err.message);
     return res.sendStatus(403);
   }
 }
