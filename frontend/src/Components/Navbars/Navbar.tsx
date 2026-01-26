@@ -9,6 +9,10 @@ export default function Navbar() {
   function toHome() {
     navigate(`/home`);
   }
+
+  function toProfile() {
+    navigate("/profile");
+  }
   return (
     <div className="flex flex-row items-center gap-8 sticky top-0 bg-green-500 shadow-md shadow-green-900 h-15 w-full caret-transparent">
       <img src={logo} alt="" className="ml-4 w-15 h-15" />
@@ -22,6 +26,14 @@ export default function Navbar() {
         >
           <h1 className="text-xl font-montserrat font-bold caret-transparent">
             Home
+          </h1>
+        </div>
+        <div className="flex items-center h-full p-4 transition duration-100 ease-linear hover:bg-green-600 hover:border-b-2 hover:border-amber-50">
+          <h1
+            className="text-xl font-montserrat font-bold caret-transparent"
+            onClick={toProfile}
+          >
+            Profile
           </h1>
         </div>
         <div

@@ -2,6 +2,7 @@ import "./App.css";
 import Homepage from "./Pages/Homepage";
 import ItemPage from "./Pages/ItemPage";
 import Login from "./Pages/Login";
+import ProfilePage from "./Pages/ProfilePage";
 import AuthLayout from "./layouts/AuthLayout";
 import MainLayout from "./layouts/MainLayout";
 import { BrowserRouter, Routes, Route, Navigate } from "react-router-dom";
@@ -22,6 +23,7 @@ function App() {
           <Route element={<MainLayout />}>
             <Route path="/home" element={<Homepage />} />
             <Route path="/recipe/:id" element={<ItemPage />} />
+            <Route path="/profile" element={<ProfilePage />} />
           </Route>
 
           <Route path="*" element={<Navigate to="/login" replace />} />

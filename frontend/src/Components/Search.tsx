@@ -4,28 +4,7 @@ import { getRecipes } from "../api/recipes.api";
 import type { searchProps } from "@/Types/Props";
 
 export default function Search({ setResult }: searchProps) {
-  // WHAT ARE HOOKS?
-  //Hooks are always placed inside React components!
-  //Some hooks are useState, useEffect, useReducer...
-
   const [query, setQuery] = useState("");
-
-  //UseEffect Hook. Syntax is CALLBACK FUNCTION (() => {}), followed by a dependecy array. ([])
-  //Functions INSIDE useEffect are ran if values in dependency array changes. If left blank, it runs once when page refreshes.
-  /*useEffect(() => {
-    //Use of async, await keywords. when adding await, it will wait until the process is finished before moving to the next line.
-    async function getRecipes() {
-      // Like here, response has to finish executing (returning an array) before data is JSONified.
-      const response = await fetch(`${URL}?query=${query}&apiKey=${apiKey}`);
-
-      //Similarly, the data has to be JSONified before the console can log the results.
-      const data = await response.json();
-      setResult(data.results);
-    }
-
-    //This method is called every time the dependency array changes (so every time query is changed.)
-    getRecipes();
-  }, [query]); */
 
   async function updateRecipes() {
     const data = await getRecipes(query);
